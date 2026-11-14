@@ -1,0 +1,6 @@
+// Web pública de PromoYa → https://promosya.pages.dev  (publicar: npx wrangler pages deploy, desde esta carpeta)
+{
+  "name": "promosya",
+  "pages_build_output_dir": "./publico",
+  "compatibility_date": "2026-09-01"
+}

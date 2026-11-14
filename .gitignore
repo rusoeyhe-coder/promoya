@@ -1,0 +1,8 @@
+node_modules
+dist
+.wrangler
+.dev.vars
+
+# Solo de la copia de MOVEDECK (no van al repositorio público)
+instancias/
+scripts/publicar-movedeck.mjs

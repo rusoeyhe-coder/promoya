@@ -1,0 +1,11 @@
+{
+  "name": "PromoYa",
+  "short_name": "PromoYa",
+  "description": "PromoYa: promos por mail de tus temas, con estadísticas de quién escuchó.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "lang": "es",
+  "icons": [{ "src": "/icono.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

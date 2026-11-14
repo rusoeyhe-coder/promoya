@@ -1,0 +1,21 @@
+// Configuración para instalar tu propia copia en TU cuenta de Cloudflare (plan gratis).
+// El botón "Deploy to Cloudflare" crea solo la base de datos D1 y publica todo.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "promoya",
+  "main": "servidor/index.js",
+  "compatibility_date": "2026-09-01",
+  // Arma el panel antes de publicar (así funciona con el botón, con «Clone a public repository» o a mano)
+  "build": { "command": "npm run build", "watch_dir": "src" },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/o/*", "/l/*", "/baja/*", "/privacidad", "/condiciones"]
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "promoya","database_id": "a17cb4c3-01fa-4402-80a1-0ee658604355" }
+  ],
+  "triggers": { "crons": ["*/10 * * * *"] },
+  "observability": { "enabled": true }
+}

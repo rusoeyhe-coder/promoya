@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PromoYa — promos por mail para tus temas</title>
+<meta name="description" content="Mandá tus temas nuevos por mail a DJs, sellos y radios desde tu Gmail, de a grupos y sin caer en spam. Enterate quién abrió, quién escuchó y quién respondió. Gratis, y tus datos quedan en tu cuenta.">
+<meta property="og:title" content="PromoYa — promos por mail para tus temas">
+<meta property="og:description" content="Campañas de promo con tu link de SoundCloud, desde tu Gmail, con estadísticas de quién escuchó. Gratis.">
+<meta property="og:url" content="https://promosya.pages.dev">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&display=swap">
+<style>
+:root{--fondo:#0a0a0a;--panel:#131313;--panel2:#1b1b1b;--borde:#262626;--texto:#f2f2f2;--suave:#a3a3a3;--tenue:#6b6b6b;--acento:#ff6a00;--acento2:#ff8a33;--ok:#3ddc84;--azul:#5aa9ff;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--fondo);color:var(--texto);font:16px/1.55 'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.ancho{max-width:1120px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-variation-settings:'wdth' 125;letter-spacing:-.015em;margin:0}
+h2{font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.1}
+h3{font-size:17px;font-weight:700}
+.sub{color:var(--suave)}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:10px;font-weight:700;text-decoration:none;border:1px solid #333;background:var(--panel2);transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px);background:#232323}
+.btn.primario{background:var(--acento);border-color:var(--acento);color:#000}
+.btn.primario:hover{background:var(--acento2)}
+.btn svg{width:18px;height:18px}
+
+/* barra */
+.barra{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)}
+.barra .ancho{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-variation-settings:'wdth' 125;font-weight:800;font-size:21px}
+.logo img{width:30px;height:30px}
+.logo b{color:var(--acento)}
+.barra nav{display:flex;gap:22px;align-items:center}
+.barra nav a{text-decoration:none;color:var(--suave);font-weight:600;font-size:15px}
+.barra nav a:hover{color:var(--texto)}
+.barra .btn{padding:9px 16px;font-size:14px}
+
+/* portada */
+.portada{padding:80px 0 60px;position:relative;overflow:hidden}
+.portada::before{content:"";position:absolute;inset:-200px -100px auto auto;width:700px;height:700px;background:radial-gradient(closest-side,#ff6a0033,transparent);pointer-events:none}
+.portada .ancho{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center;position:relative}
+.etiqueta{display:inline-block;padding:5px 12px;border-radius:99px;border:1px solid #5a2a08;background:#1f1006;color:var(--acento2);font-weight:700;font-size:13px;letter-spacing:.04em;margin-bottom:20px}
+.portada h1{font-size:clamp(38px,6vw,64px);line-height:1;font-weight:800}
+.portada h1 em{font-style:normal;color:var(--acento)}
+.portada p.lead{font-size:clamp(17px,2vw,20px);color:#cfcfcf;margin:22px 0 30px;max-width:540px}
+.acciones{display:flex;gap:12px;flex-wrap:wrap}
+.chicos{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;color:var(--suave);font-size:14px}
+.chicos span::before{content:"✓ ";color:var(--ok);font-weight:800}
+
+/* maqueta del panel */
+.maqueta{background:var(--panel);border:1px solid var(--borde);border-radius:16px;padding:18px;box-shadow:0 30px 80px #000a,0 0 0 1px #ffffff08}
+.maqueta .cab{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.maqueta .tapa{width:52px;height:52px;border-radius:8px;background:linear-gradient(135deg,#ff6a00,#5a1a00)}
+.maqueta .cab b{display:block;font-variation-settings:'wdth' 120}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;color:var(--acento);background:#1f1006;border:1px solid #5a2a08}
+.chip i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:latido 1.4s infinite}
+@keyframes latido{50%{opacity:.3}}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:var(--panel2);border:1px solid var(--borde);border-radius:10px;padding:10px 12px}
+.kpi small{display:block;color:var(--suave);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi b{font-size:24px;font-variation-settings:'wdth' 115}
+.kpi.a b{color:var(--acento)}
+.embudo{display:grid;gap:8px}
+.paso{display:grid;grid-template-columns:96px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+.paso span{color:var(--suave)}
+.pista{height:14px;background:var(--panel2);border-radius:4px;overflow:hidden}
+.pista i{display:block;height:100%;border-radius:4px;transform-origin:left;animation:crece 1.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes crece{from{transform:scaleX(0)}}
+.paso b{text-align:right;font-variant-numeric:tabular-nums}
+.feed{margin-top:14px;border-top:1px solid var(--borde);padding-top:10px;display:grid;gap:8px;font-size:13px}
+.feed div{display:flex;gap:8px;align-items:center}
+.feed .ico{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:var(--panel2);flex:none}
+.feed .t{color:var(--tenue);margin-left:auto;white-space:nowrap}
+
+/* secciones */
+section{padding:80px 0}
+.titulo{max-width:680px;margin-bottom:40px}
+.titulo p{color:var(--suave);font-size:18px;margin:14px 0 0}
+.grilla{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:14px;padding:22px}
+.tarjeta .ic{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:#1f1006;border:1px solid #5a2a08;color:var(--acento);font-size:20px;margin-bottom:14px}
+.tarjeta p{color:var(--suave);margin:8px 0 0;font-size:15px}
+.guia{list-style:none;counter-reset:g;margin:0;padding:0;display:grid;gap:16px}
+.guia>li{counter-increment:g;position:relative;background:var(--panel);border:1px solid var(--borde);border-radius:14px;padding:22px 22px 22px 76px}
+.guia>li::before{content:counter(g);position:absolute;left:22px;top:20px;width:36px;height:36px;border-radius:50%;background:var(--acento);color:#000;display:grid;place-items:center;font-weight:800;font-size:17px}
+.guia h3{font-size:20px;margin-bottom:6px}
+.guia p,.guia li li{color:#cfcfcf}
+.guia ul{margin:8px 0;padding-left:20px;display:grid;gap:6px}
+.guia .nota{color:var(--suave);font-size:14px;border-left:3px solid #5a2a08;padding-left:12px}
+.guia a:not(.btn){color:var(--acento2)}
+.enlaces{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.btn.chico{padding:9px 14px;font-size:14px}
+.atasco{margin-top:16px;border:1px solid #4a3a12;background:#1d1708;border-radius:10px;padding:14px 16px}
+.atasco b:first-child{color:#ffd98a}
+.atasco p{margin:6px 0}
+.guia code,.atasco code{background:#0e0e0e;border:1px solid #333;border-radius:5px;padding:1px 6px;font-size:14px;overflow-wrap:anywhere}
+.oscuro{background:#0f0f0f;border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)}
+
+/* pasos */
+.pasos{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:p}
+.pasos .tarjeta{position:relative;padding-top:56px}
+.pasos .tarjeta::before{counter-increment:p;content:counter(p);position:absolute;top:18px;left:22px;width:28px;height:28px;border-radius:50%;background:var(--acento);color:#000;display:grid;place-items:center;font-weight:800;font-size:14px}
+.necesitas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px;align-items:center}
+.necesitas .chipg{padding:8px 14px;border-radius:99px;border:1px solid #333;background:var(--panel);font-weight:600;font-size:14px}
+
+/* datos */
+.datos{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.lista{display:grid;gap:14px;margin:0;padding:0;list-style:none}
+.lista li{display:flex;gap:12px;color:#d6d6d6}
+.lista li::before{content:"✓";color:var(--ok);font-weight:800}
+.diagrama{background:var(--panel);border:1px solid var(--borde);border-radius:16px;padding:24px;display:grid;gap:12px}
+.caja{border:1px solid #333;border-radius:10px;padding:12px 14px;background:var(--panel2);display:flex;justify-content:space-between;gap:10px}
+.caja b{font-variation-settings:'wdth' 115}
+.caja.tuya{border-color:#5a2a08;background:#170c04}
+.flecha{text-align:center;color:var(--tenue);font-size:13px}
+
+/* preguntas */
+details{background:var(--panel);border:1px solid var(--borde);border-radius:12px;padding:16px 20px}
+details+details{margin-top:10px}
+summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--acento);font-size:20px;line-height:1}
+details[open] summary::after{content:"–"}
+details p,details ol{color:var(--suave);margin:12px 0 0}
+details li{margin:4px 0}
+
+.final{text-align:center;padding:90px 0}
+.final p{color:var(--suave);font-size:18px;max-width:560px;margin:14px auto 30px}
+footer{border-top:1px solid var(--borde);padding:28px 0;color:var(--tenue);font-size:14px}
+footer .ancho{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--suave)}
+
+@media (max-width:900px){
+  .portada{padding:48px 0 40px}
+  .portada .ancho,.datos{grid-template-columns:minmax(0,1fr);gap:36px}
+  .grilla{grid-template-columns:minmax(0,1fr)}
+  .pasos{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .barra nav a.ocultable{display:none}
+  section{padding:60px 0}
+}
+@media (max-width:560px){
+  .maqueta{display:none}
+  .guia>li{padding:64px 18px 20px}
+  .guia>li::before{top:18px;left:18px}
+  .ancho{padding:0 16px}
+  .pasos{grid-template-columns:minmax(0,1fr)}
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .kpi b{font-size:19px}
+  .paso{grid-template-columns:80px 1fr 38px}
+  .acciones .btn{flex:1;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="ancho">
+    <a class="logo" href="#"><img src="/icono.svg" alt=""><span>Promo<b>Ya</b></span></a>
+    <nav>
+      <a class="ocultable" href="#que-hace">Qué hace</a>
+            <a class="ocultable" href="#preguntas">Preguntas</a>
+      <a class="btn primario" href="#empezar">Empezá acá</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="portada">
+  <div class="ancho">
+    <div>
+      <span class="etiqueta">GRATIS · PARA PRODUCTORES Y DJS</span>
+      <h1>Tu tema nuevo, en la bandeja de los DJs <em>que importan.</em></h1>
+      <p class="lead">PromoYa manda tus promos por mail desde tu Gmail, de a grupos y sin caer en spam. Después te muestra quién abrió, quién tocó el link y quién te escuchó en SoundCloud.</p>
+      <div class="acciones">
+        <a class="btn primario" href="#empezar">Empezá acá
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="#que-hace">Ver qué hace</a>
+      </div>
+      <div class="chicos"><span>Gratis</span><span>Desde tu Gmail</span><span>Tus datos en tu cuenta</span></div>
+    </div>
+
+    <div class="maqueta" aria-label="Ejemplo de una campaña en PromoYa">
+      <div class="cab">
+        <span class="tapa"></span>
+        <div style="flex:1;min-width:0"><b>Groove Machine (Original Mix)</b><span class="sub" style="font-size:13px">4 grupos · 100 contactos</span></div>
+        <span class="chip"><i></i>Enviando</span>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><small>Enviados</small><b>75</b></div>
+        <div class="kpi a"><small>Abrieron</small><b>61%</b></div>
+        <div class="kpi"><small>Escucharon</small><b>23</b></div>
+      </div>
+      <div class="embudo">
+        <div class="paso"><span>Recibieron</span><div class="pista"><i style="width:100%;background:#555"></i></div><b>75</b></div>
+        <div class="paso"><span>Abrieron</span><div class="pista"><i style="width:61%;background:var(--azul);animation-delay:.15s"></i></div><b>46</b></div>
+        <div class="paso"><span>Tocaron link</span><div class="pista"><i style="width:41%;background:var(--acento);animation-delay:.3s"></i></div><b>31</b></div>
+        <div class="paso"><span>Escucharon</span><div class="pista"><i style="width:31%;background:var(--ok);animation-delay:.45s"></i></div><b>23</b></div>
+        <div class="paso"><span>Respondieron</span><div class="pista"><i style="width:12%;background:#c792ea;animation-delay:.6s"></i></div><b>9</b></div>
+      </div>
+      <div class="feed">
+        <div><span class="ico" style="color:var(--ok)">↩</span><span><b>DJ Kraken</b> te respondió: «¡Lo paso el sábado!»</span><span class="t">hace 4 min</span></div>
+        <div><span class="ico" style="color:var(--acento)">▶</span><span><b>Lucía Vidal</b> tocó el link</span><span class="t">hace 12 min</span></div>
+        <div><span class="ico" style="color:var(--azul)">✉</span><span><b>Sello Deep Roots</b> abrió el mail</span><span class="t">hace 20 min</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="empezar" class="oscuro">
+  <div class="ancho">
+    <div class="titulo">
+      <span class="etiqueta">EMPEZÁ ACÁ</span>
+      <h2>Cómo tener tu PromoYa, paso a paso.</h2>
+      <p>Tarda unos 15 minutos y no hace falta saber programar. Seguí estos pasos en orden: cuando termines el paso 4, la misma app te guía en todo lo demás.</p>
+    </div>
+
+    <ol class="guia">
+      <li>
+        <h3>Creá tus cuentas gratis</h3>
+        <p>Si ya las tenés, saltá este paso.</p>
+        <div class="enlaces">
+          <a class="btn chico" href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener">Crear cuenta de Cloudflare ↗</a>
+          <a class="btn chico" href="https://github.com/signup" target="_blank" rel="noopener">Crear cuenta de GitHub ↗</a>
+        </div>
+        <p class="nota">Cloudflare es donde va a vivir tu PromoYa (gratis). GitHub guarda tu copia del programa y te avisa cuando hay mejoras. Además vas a usar el Gmail desde el que querés mandar las promos.</p>
+      </li>
+      <li>
+        <h3>Tocá «Instalar en mi Cloudflare»</h3>
+        <div class="enlaces"><a class="btn primario" href="https://deploy.workers.cloudflare.com/?url=https://github.com/promosya/promoya" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 17.5H7a4 4 0 01-.6-8 5.5 5.5 0 0110.6 1.2A3.4 3.4 0 0116.5 17.5z"/></svg>
+          Instalar en mi Cloudflare</a></div>
+        <p>Se abre Cloudflare. Hacé esto en la pantalla que aparece:</p>
+        <ul>
+          <li>Entrá con tu cuenta de <b>Cloudflare</b>.</li>
+          <li>Donde dice <b>Git account</b>, conectá tu <b>GitHub</b> y tocá <b>Authorize</b> (autorizar).</li>
+          <li>Los nombres del proyecto y de la base de datos (<b>promoya</b>) dejalos como están.</li>
+          <li>En <b>NOMBRE_ARTISTICO</b> escribí tu nombre artístico, por ejemplo <i>DJ Fulano</i>. <b>Anotalo:</b> va a ser tu usuario para entrar.</li>
+          <li>Tocá <b>Create and deploy</b> (crear y publicar) y esperá uno o dos minutos.</li>
+        </ul>
+        <p class="nota">Si es tu primera vez en Cloudflare, puede que te pida elegir un subdominio de <b>workers.dev</b>: poné tu nombre artístico sin espacios. Es parte de tu dirección.</p>
+        <div class="atasco">
+          <b>¿Te aparece «Select a repository» y se queda en «Loading…»?</b>
+          <p>Pasa si Cloudflare te pidió iniciar sesión en el medio y perdió el link. Tenés dos salidas:</p>
+          <ul>
+            <li><b>La fácil:</b> volvé a esta página y tocá otra vez <b>«Instalar en mi Cloudflare»</b>. Como ya entraste, ahora va directo.</li>
+            <li><b>Desde esa misma pantalla:</b> tocá <b>«Clone a public repository via Git URL»</b>, pegá <code>https://github.com/promosya/promoya</code> y tocá <b>Next</b>. Dejá el nombre <b>promoya</b> y los comandos como vienen, y tocá <b>Deploy</b>.<br>
+            Por este camino no te pide el nombre artístico, así que cargalo después: entrá a tu worker <b>promoya</b> → <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b> → tipo <b>Secret</b>, nombre <code>NOMBRE_ARTISTICO</code> y como valor tu nombre artístico → <b>Deploy</b>.</li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <h3>Abrí tu dirección</h3>
+        <p>Cuando termina, Cloudflare te muestra un link que termina en <b>.workers.dev</b>, por ejemplo <i>promoya.djfulano.workers.dev</i>. Esa es <b>tu PromoYa</b>: abrila y guardala en favoritos.</p>
+        <p class="nota">¿La perdiste? Entrá a <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages" target="_blank" rel="noopener">Cloudflare → Workers y Pages</a>, tocá <b>promoya</b> y ahí está el link.</p>
+      </li>
+      <li>
+        <h3>Entrá con tu nombre y una contraseña</h3>
+        <p>La primera vez escribí tu <b>nombre artístico</b> (el mismo del paso 2) y elegí una <b>contraseña</b> de al menos 6 caracteres. Con esos dos datos vas a entrar siempre.</p>
+      </li>
+      <li>
+        <h3>Seguí los «Primeros pasos» de la app</h3>
+        <p>Adentro, la app te lleva de la mano:</p>
+        <ul>
+          <li><b>Tus datos:</b> nombre artístico, tu SoundCloud y la firma de los mails.</li>
+          <li><b>Conectar tu Gmail:</b> te explica cómo crear el permiso en Google (unos 10 minutos), con links directos y botones para copiar cada dato.</li>
+          <li><b>Contactos, grupos y tu primera campaña.</b></li>
+        </ul>
+        <p class="nota">Cuando Google muestre «Google no ha verificado esta aplicación», es normal: tocá <b>Configuración avanzada</b> → <b>Ir a PromoYa (no seguro)</b>, marcá todos los permisos y tocá <b>Continuar</b>.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="que-hace">
+  <div class="ancho">
+    <div class="titulo">
+      <h2>Todo lo que hacías a mano, solo.</h2>
+      <p>Cargás tus contactos una vez. Por cada tema nuevo pegás el link de SoundCloud, elegís los grupos y PromoYa se encarga del resto.</p>
+    </div>
+    <div class="grilla">
+      <div class="tarjeta"><div class="ic">🎧</div><h3>Campaña por tema</h3><p>Pegás el link de SoundCloud (puede ser privado) y completa solo el nombre y la tapa.</p></div>
+      <div class="tarjeta"><div class="ic">📅</div><h3>Un grupo por día</h3><p>Dividís tus contactos en grupos y sale uno por día, en el orden que elijas.</p></div>
+      <div class="tarjeta"><div class="ic">🛡</div><h3>Cuida tu Gmail</h3><p>Hasta 100 mails por día, con arranque gradual y de a poco, para no caer en spam.</p></div>
+      <div class="tarjeta"><div class="ic">👀</div><h3>Quién abrió y escuchó</h3><p>Cada contacto recibe su propio link: sabés quién abrió, quién tocó el link y quién respondió.</p></div>
+      <div class="tarjeta"><div class="ic">⟳</div><h3>Recordatorio automático</h3><p>A los que no abrieron les llega un segundo mail corto a los días que elijas.</p></div>
+      <div class="tarjeta"><div class="ic">A/B</div><h3>Dos asuntos distintos</h3><p>Probás dos asuntos con el primer grupo y el resto recibe el que más se abrió.</p></div>
+      <div class="tarjeta"><div class="ic">⏰</div><h3>Mejor horario</h3><p>Aprende a qué hora abre cada contacto y le manda a esa hora.</p></div>
+      <div class="tarjeta"><div class="ic">❄</div><h3>Contactos fríos</h3><p>Te marca a los que nunca abren, para que les escribas distinto o los saques.</p></div>
+      <div class="tarjeta"><div class="ic">📇</div><h3>Ficha de cada contacto</h3><p>Todo lo que le mandaste y qué hizo con cada promo. Rebotes y bajas se marcan solos.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="oscuro">
+  <div class="ancho datos">
+    <div>
+      <h2>Tus contactos son tuyos.</h2>
+      <p class="sub" style="font-size:18px;margin:14px 0 26px">PromoYa no es un servicio donde subís tu lista a la cuenta de otro. Cada uno instala su propia copia, gratis, en su propia cuenta.</p>
+      <ul class="lista">
+        <li>Los mails salen de tu Gmail, uno por uno, como si los mandaras vos.</li>
+        <li>Tu lista y tus estadísticas quedan en una base de datos de tu cuenta de Cloudflare.</li>
+        <li>Nadie más, ni siquiera quien hizo PromoYa, puede ver tus datos.</li>
+        <li>Cada mail trae un link para darse de baja, como corresponde.</li>
+      </ul>
+    </div>
+    <div class="diagrama" aria-label="Cómo se conectan las partes">
+      <div class="caja tuya"><b>Tu PromoYa</b><span class="sub">tu cuenta de Cloudflare</span></div>
+      <div class="flecha">↓ manda desde</div>
+      <div class="caja tuya"><b>Tu Gmail</b><span class="sub">tu cuenta de Google</span></div>
+      <div class="flecha">↓ a</div>
+      <div class="caja"><b>Tus DJs, sellos y radios</b><span class="sub">tu lista</span></div>
+      <div class="flecha">↓ escuchan en</div>
+      <div class="caja"><b>Tu SoundCloud</b><span class="sub">link con seguimiento</span></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="preguntas">
+  <div class="ancho" style="max-width:780px">
+    <div class="titulo"><h2>Preguntas</h2></div>
+    <details><summary>¿Es gratis de verdad?</summary><p>Sí. PromoYa es gratis y se instala en el plan gratis de Cloudflare, que alcanza de sobra para mandar 100 mails por día. Google y GitHub también son gratis.</p></details>
+    <details><summary>¿Quién ve mis contactos?</summary><p>Solo vos. Tu copia de PromoYa y tu base de datos viven en tu cuenta de Cloudflare. No se comparten con nadie.</p></details>
+    <details><summary>¿Por qué no más de 100 mails por día?</summary><p>Gmail deja mandar unos 500 por día, pero si mandás muchos de golpe tus mails terminan en spam. PromoYa arranca con 30 por día y sube de a poco hasta 100. El tope se puede cambiar.</p></details>
+    <details><summary>¿Cómo sabe quién escuchó?</summary><p>Cada contacto recibe un link propio que pasa por tu PromoYa y lo lleva a SoundCloud: así sabés quién lo tocó. Además, si cargás el usuario de SoundCloud de cada contacto, podés cruzarlo con lo que ves en tus estadísticas y marcarlo como escuchado.</p></details>
+    <details><summary>Al conectar Gmail, Google dice «no ha verificado esta aplicación»</summary><p>Es normal: la app es tuya y no pasó por la revisión de Google. Hacé esto:</p><ol><li>Tocá <b>Configuración avanzada</b> (abajo a la izquierda).</li><li>Tocá <b>Ir a PromoYa (no seguro)</b>.</li><li>Marcá todos los permisos y tocá <b>Continuar</b>.</li></ol></details>
+    <details><summary>¿Funciona en el celular?</summary><p>Sí. Abrí tu PromoYa en el celular y elegí «Agregar a la pantalla de inicio» para tenerla como una app.</p></details>
+    <details><summary>¿Cómo recibo las mejoras?</summary><p>Cuando haya una versión nueva, entrá a tu copia en GitHub y tocá <b>Sync fork</b>. Cloudflare la publica sola y tus datos no se tocan.</p></details>
+  </div>
+</section>
+
+<div class="final oscuro">
+  <div class="ancho">
+    <h2>Tu próximo tema merece llegar.</h2>
+    <p>Instalá PromoYa gratis y mandá tu primera campaña hoy.</p>
+    <a class="btn primario" href="#empezar">Instalá tu PromoYa</a>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="ancho">
+    <span>PromoYa · hecho por <a href="https://movedeck-web.web.app" target="_blank" rel="noopener">MOVEDECK</a></span>
+    <a href="https://github.com/promosya/promoya" target="_blank" rel="noopener">Código en GitHub</a>
+  </div>
+</footer>
+</body>
+</html>
